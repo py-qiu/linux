@@ -1,0 +1,150 @@
+#include "seqlist.h"
+#include<stdlib.h>
+#include<stdio.h>
+
+seqlist_t *CreateEmptySqlist()
+{
+	seqlist_t *p;
+	
+	p = (seqlist_t *)malloc(sizeof(seqlist_t));
+	
+	if(p)//内存分配成功,将last置为-1
+	{
+		p->last = -1;
+	}
+
+	return p;
+}
+
+
+void DestroySqlist(seqlist_t *list)
+{
+	if (list)
+		free(list);
+}
+
+
+void ClearSqlist(seqlist_t *list)
+{
+	if (list)
+		list->last = -1;
+}
+
+
+int EmptySqlist(seqlist_t *list)
+{
+	if (!list)
+		return -1; //error
+	else if (-1 == list->last)
+		return 1;  //list empty
+	else
+		return 0;	 //list not empty
+}
+
+
+int FullSqlist(seqlist_t *list)
+{
+	if (!list)
+		return -1; //error
+	else if (MAX-1 == list->last)
+		return 1;  //full
+	else
+		return 0;  //not full
+}
+
+
+int LengthSqlist(seqlist_t *list)
+{
+	if (!list)
+		return -1; //error
+	else
+		return list->last + 1;
+}
+
+
+int InsertSqlist(seqlist_t *list, int at, data_t x)
+{
+	int i = 0;
+	
+	if (!list)
+		return -1; //error,list fault
+		
+	if ((at<0) || (at>MAX-1))
+		return -2; //error,position overreach
+		
+	if (FullSqlist(list)) //error,list full
+		return -3;
+		
+	if (at > list->last)
+	{
+		list->data[list->last+1] = x;
+	}
+	else
+	{
+		for (i=list->last; i>=at; i--)
+		{
+			list->data[i+1] = list->data[i];
+		}//end of for
+			
+		list->data[at] = x;
+	}
+	
+	list->last++;
+		
+	return 0;
+}
+
+
+int DeleteSqlist(seqlist_t *list, int at)
+{
+	int i = 0;
+	
+	if (!list)
+		return -1; //error, list error
+		
+	if ((at<0) || (at>MAX-1))
+		return -1; //error,position overreach
+		
+	if (at > list->last)
+		return 1; //error, not found
+		
+	for (i=at; i<list->last; i++)
+	{
+		list->data[i] = list->data[i+1];
+	}
+
+	list->last--;
+	
+	return 0;
+}
+
+
+int GetSqlist(seqlist_t *list, int at, data_t *x)
+{
+	if (!list)
+		return -1; //error,list invalid
+		
+	if ((at<0) || (at>list->last))
+		return -1; //error, position overreach
+		
+	if (!x)
+		return -1; //error
+		
+	*x = list->data[at];
+	
+	return 0;
+}
+
+
+int SetSqlist(seqlist_t *list, int at, data_t x)
+{
+	if (!list)
+		return -1; //error,list invalid
+		
+	if ((at<0) || (at>list->last))
+		return -1; //error, position overreach
+		
+	list->data[at] = x;
+	
+	return 0;
+}
